@@ -17,7 +17,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hardtoguessstringfromsi364thisisnotsupersecurebutitsok'
 
 # Update the database URI
-app.config['SQLALCHEMY_DATABASE_URI'] = ""
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://localhost/moviedb"
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -57,12 +57,31 @@ def index():
 
 #Add code to this function
 @app.route("/addMovie")
-def result():
-    pass
+def result(): # first have to access user data!!!
+    form = MovieDirectorForm(request.form)
+    movie_name = form.data.movie_name
+    director_name = form.data.director_name
+
+    if form.validate_on_submit():
+        d = Director.query.filter_by(directorName='<director name>').first() # want to query on table name
+        if d: # want to filter query where the director name is equal to the name on the form (the user entered)
+          print("Director exists")
+    else:
+        d = Director(directorName = '<director name entered in form>') # call table name and assign columns
+        db.session.add(d)
+        db.session.commit()
+
+        m = Movie(movieTitle = movie_name,directorId = d.directorId)
+        db.session.add(m)
+        db.session.commit()
+
+    return render_template('index.html')
+
 
 #Add code to this function
 @app.route("/viewMovies")
-    pass
+def show():
+    movies = Movie.query.all()
 
 
 if __name__=='__main__':
