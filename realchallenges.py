@@ -71,17 +71,18 @@ def result(): # first have to access user data!!!
         db.session.add(d)
         db.session.commit()
 
-        m = Movie(movieTitle = movie_name,directorId = d.directorId)
-        db.session.add(m)
-        db.session.commit()
+    m = Movie(movieTitle = movie_name,directorId = d.directorId)
+    db.session.add(m)
+    db.session.commit()
 
-    return render_template('index.html')
+    return redirect(url_for('view_function'))
 
 
 #Add code to this function
 @app.route("/viewMovies")
 def show():
     movies = Movie.query.all()
+    return render_template('movies.html', movies = movies)
 
 
 if __name__=='__main__':
